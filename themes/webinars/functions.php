@@ -25,6 +25,9 @@ function enqueue_scripts() {
     wp_enqueue_script( 'jquery.min' );
     wp_register_script( 'subscribe', THEME_DIR . '/js/subscribe.js', array(), '', false );
     wp_enqueue_script( 'subscribe' );
+    wp_localize_script( 'subscribe', 'postsubscribe', array(
+     'ajax_url' => admin_url( 'admin-ajax.php' )
+     ));
 }
 add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 
@@ -55,20 +58,19 @@ function register_custom_sidebars() {
 }
 add_action( 'widgets_init', 'register_custom_sidebars' );
 
-//$user_id = get_current_user_id();
-//$post_id = $_POST['post_id'];
 function subscribeOn($user_id, $post_id) {
     global $wpdb, $user_id, $post_id;
     $user_id = get_current_user_id();
     $post_id = $_POST['post_id'];
 
-    if ( ! function_exists('is_ajax') ) {
-        function is_ajax() {
-            return defined( 'DOING_AJAX' );
-        }
+    if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+     echo 111;
+     die();
+     }
+    else {
+     wp_redirect( get_permalink( $_POST['post_id'] ) );
+     exit();
     }
-
-
 
     $table_name = $wpdb->prefix . "subscribe";
 //    $sql = "INSERT INTO " . $table_name . " (user_id, post_id) VALUES ('$user_id','$post_id');";
