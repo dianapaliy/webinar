@@ -24,7 +24,6 @@
                             <button type="submit" name="subscribe" id="subscribe">Subscribe</button>
                             <input id="postId" type="hidden" value="<?php the_ID(); ?>" />
                             <?php }
-                            var_dump($_POST);
                             ?>
                             <?php wp_link_pages(array('before' => '<p><strong>Pages:</strong> ', 'after' => '</p>', 'next_or_number' => 'number')); ?>
                             </div>

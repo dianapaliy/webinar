@@ -5,7 +5,6 @@ register_nav_menus(array(
 ));
 
 define("THEME_DIR", get_template_directory_uri());
-require_once( ABSPATH . 'wp-load.php');
 /* REMOVE GENERATOR META TAG ---*/
 remove_action('wp_head', 'wp_generator');
  
@@ -23,12 +22,13 @@ function enqueue_scripts() {
     wp_deregister_script('jquery');
     wp_register_script( 'jquery.min', THEME_DIR . '/js/jquery-1.11.1.min.js', array(), '', false );
     wp_enqueue_script( 'jquery.min' );
+
     wp_register_script( 'subscribe', THEME_DIR . '/js/subscribe.js', array(), '', false );
     wp_enqueue_script( 'subscribe' );
-    wp_localize_script( 'subscribe', 'postsubscribe', array(
-     'ajax_url' => admin_url( 'admin-ajax.php' )
-     ));
+    wp_localize_script( 'subscribe',  'admin_url', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ));
 }
+
+
 add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 
 remove_filter('the_content', 'wpautop');
@@ -58,32 +58,17 @@ function register_custom_sidebars() {
 }
 add_action( 'widgets_init', 'register_custom_sidebars' );
 
-function subscribeOn($user_id, $post_id) {
+function subscribeOn() {
+
     global $wpdb, $user_id, $post_id;
     $user_id = get_current_user_id();
     $post_id = $_POST['post_id'];
 
-    if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-     echo 111;
-     die();
-     }
-    else {
-     wp_redirect( get_permalink( $_POST['post_id'] ) );
-     exit();
-    }
+//    $table_name = $wpdb->prefix . "subscribe";
+    $wpdb->insert("wp_subscribe", array(  'user_id'=>$user_id,  'post_id'=>$post_id), array('%s','%s'));
 
-    $table_name = $wpdb->prefix . "subscribe";
-//    $sql = "INSERT INTO " . $table_name . " (user_id, post_id) VALUES ('$user_id','$post_id');";
-//    dbDelta($sql);
-    $wpdb->insert($table_name, array(  'user_id'=>$user_id,  'post_id'=>$post_id),array('%s','%s'));
-//    if($wpdb->insert($table_name, array(  'user_id'=>$user_id,  'post_id'=>$post_id),array('%s','%s'))===FALSE)
-//    {
-//        echo "Error";
-//    }
-//    else {
-////        echo "Customer '".$name. "' successfully added, row ID is ".$wpdb->insert_id;
-//        echo "OK!!!!!!!!";
-//    }
-//    die();
+    header('Content-Type: application/json');
+    echo json_encode($_POST);
 }
-add_action('wp_ajax_subscribeOn', 'subscribeOn)');
+add_action( 'wp_ajax_nopriv_subscribeOn', 'subscribeOn' );
+add_action('wp_ajax_subscribeOn', 'subscribeOn');

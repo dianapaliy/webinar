@@ -9,14 +9,17 @@ $(function(){
 
             $onSubscr.on('click', function() {
                 var $el = $(this),
-                    $post_id = $('#postId').val();
+                    post_id = $('#postId').val();
                 //$el.hide();
                 $.ajax({
                     type:"POST",
-                    ajaxurl : postsubscribe.ajax_url,
-                    data:'post_id='+$post_id,
-                    action: 'subscribeOn'
-                });
+                    url: admin_url.ajaxurl,
+                    data: {
+                        action: 'subscribeOn',
+                        post_id: post_id
+                    },
+                    cache: false
+                }).done(function(data){ alert(data); });
                 return false;
             });
         }
