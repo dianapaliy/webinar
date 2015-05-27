@@ -13,8 +13,9 @@ $(function(){
                 //$el.hide();
                 $.ajax({
                     type:"POST",
-                    url:"../wp-admin/admin-ajax.php",
-                    data:'post_id='+$post_id
+                    ajaxurl : postsubscribe.ajax_url,
+                    data:'post_id='+$post_id,
+                    action: 'subscribeOn'
                 });
                 return false;
             });
