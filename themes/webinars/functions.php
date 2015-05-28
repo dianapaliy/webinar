@@ -63,8 +63,8 @@ function subscribeOn() {
     global $wpdb, $user_id, $post_id;
     $user_id = get_current_user_id();
     $post_id = $_POST['post_id'];
+    $wpdb->show_errors();
 
-//    $table_name = $wpdb->prefix . "subscribe";
     $wpdb->insert("wp_subscribe", array(  'user_id'=>$user_id,  'post_id'=>$post_id), array('%s','%s'));
 
     header('Content-Type: application/json');
@@ -72,3 +72,5 @@ function subscribeOn() {
 }
 add_action( 'wp_ajax_nopriv_subscribeOn', 'subscribeOn' );
 add_action('wp_ajax_subscribeOn', 'subscribeOn');
+
+

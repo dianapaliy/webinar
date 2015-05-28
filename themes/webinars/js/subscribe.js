@@ -10,7 +10,7 @@ $(function(){
             $onSubscr.on('click', function() {
                 var $el = $(this),
                     post_id = $('#postId').val();
-                //$el.hide();
+                $el.hide();
                 $.ajax({
                     type:"POST",
                     url: admin_url.ajaxurl,
